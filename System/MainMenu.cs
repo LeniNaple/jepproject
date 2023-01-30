@@ -1,22 +1,17 @@
-﻿using jepproject.Interfaces;
-using MongoDB.Bson.IO;
-using Newtonsoft.Json;
-using System.Text.Json.Serialization;
-using JsonConvert = Newtonsoft.Json.JsonConvert;
+﻿using Newtonsoft.Json;
 
 namespace jepproject.System;
 
 
 internal class MainMenu
 {
-    private List<IContact> contacts = new List<IContact>();
+    private List<Contact> contacts = new List<Contact>();
     private FileService fileService = new FileService();
-
     public string Path { get; set; } = null!;
-
-
     public void WelcomeMenu()
     {
+       PopulateContacts();
+
         Console.Clear();
         Console.WriteLine("Välkommen till Adressboken");
         Console.WriteLine("1. Skapa en kontakt");
@@ -37,9 +32,30 @@ internal class MainMenu
         }
     }
 
+    private void PopulateContacts()
+    {
+        try
+        {
+            var items = JsonConvert.DeserializeObject<List<Contact>>(fileService.Read(Path));
+            if (items != null)
+
+                contacts = items;
+                Console.WriteLine(items);
+            
+        } 
+        catch 
+        {
+            Console.WriteLine("ERROR");
+        }
+        
+    }
+
+    
+
+
     private void CreateContact() 
     {
-        IContact contact = new Contact();
+        Contact contact = new Contact();
 
         Console.Clear();
         Console.WriteLine("Skapa en kontakt");
@@ -54,7 +70,7 @@ internal class MainMenu
         Console.WriteLine("Phone number: ");
         contact.Number = Console.ReadLine() ?? "";
 
-        contacts.Add(contact);
+        
         Console.WriteLine("The following contact has been created: ");
         Console.WriteLine($"{contact.FirstName} {contact.LastName}");
         Console.WriteLine(contact.Email);
@@ -64,8 +80,8 @@ internal class MainMenu
         Console.WriteLine("Tryck valfri knapp för att återgå till menyn.");
         Console.ReadKey();
 
-
-        fileService.Save(Path, JsonConvert.SerializeObject(new { contacts }));
+        contacts.Add(contact);
+        fileService.Save(Path, JsonConvert.SerializeObject(contacts));
 
 
     }
@@ -88,16 +104,18 @@ internal class MainMenu
         Console.WriteLine("Det var alla kontakter, tryck valfri tangent för att återgå till huvudmenyn.");
         Console.ReadKey();
     }
+
     private void SearchContact()
     {
         //Search for a contact in list...
         
     }
+
+
     private void RemoveContact()
     {
         //Search and remove a contact from list... 
-        fileService.Read(Path);
-        Console.WriteLine(Path);
+        
     }
 
 }

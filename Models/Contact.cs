@@ -1,14 +1,25 @@
-﻿using jepproject.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace jepproject.System
+﻿namespace jepproject.System
 {
+
+    internal interface IContact
+    {
+
+        Guid Id { get; set; }
+
+        string FirstName { get; set; }
+
+        string LastName { get; set; }
+
+        string Email { get; set; }
+
+        string Adress { get; set; }
+
+        string Number { get; set; }
+    }
+
     internal class Contact : IContact
     {
+
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public string FirstName { get; set; } = null!;
@@ -20,8 +31,6 @@ namespace jepproject.System
         public string Adress { get; set; } = null!;
 
         public string Number { get; set; } = null!;
-
-        string FullName => $"{FirstName} +  {LastName}";
 
     }
 }
